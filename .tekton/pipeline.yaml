@@ -1,0 +1,50 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: rhdh-plugin
+spec:
+  workspaces:
+  - name: source
+
+  params:
+
+    - name: GIT_URL
+      type: string
+      default: https://github.com/daferoli/backstage-plugin-scaffolder-global-variables
+    - name: GIT_REVISION
+      type: string
+      default: main
+    - name: APP_NAME
+      description: The name of the application
+      default: 'nodejs-app'      
+    - name: APP_VERSION
+      description: The version of the application
+      default: '1.0'      
+
+  tasks:
+
+  - name: clone
+    taskRef:
+      name: git-clone
+      kind: ClusterTask
+    params:
+      - name: url
+        value: $(params.GIT_URL)
+      - name: revision
+        value: $(params.GIT_REVISION)
+    workspaces:
+    - name: output
+      workspace: source
+
+  - name: yarn-build
+    taskRef:
+      name: yarn
+      kind: Task
+    runAfter: 
+      - clone
+    params:
+    - name: SCRIPT
+      value: install
+    workspaces:
+    - name: source
+      workspace: source
