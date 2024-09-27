@@ -12,7 +12,11 @@
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "backend-plugin-module"
+    "role": "backend-plugin-module",
+    "pluginId": "scaffolder-export-global-variable",
+    "pluginPackages": [
+      "@daferoli/backstage-plugin-scaffolder-backend-module-export-global-variable"
+    ]
   },
   "scripts": {
     "start": "backstage-cli package start",
@@ -28,7 +32,8 @@
     "@backstage/plugin-scaffolder-node": "^0.4.11"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.27.1"
+    "@backstage/cli": "^0.27.1",
+    "typescript": "5.6.2"
   },
   "files": [
     "dist"
