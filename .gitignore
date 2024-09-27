@@ -13,3 +13,4 @@
 .editorconfig
 dist-types/
 dist/
+node_modules

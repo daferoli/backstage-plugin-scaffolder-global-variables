@@ -14,7 +14,7 @@
   "backstage": {
     "role": "backend-plugin-module",
     "pluginId": "scaffolder-export-global-variable",
-    "pluginPackages": [
+    "pluginPackage": [
       "@daferoli/backstage-plugin-scaffolder-backend-module-export-global-variable"
     ]
   },
