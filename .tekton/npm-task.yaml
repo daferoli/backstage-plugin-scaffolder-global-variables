@@ -1,28 +1,36 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: yarn
+  name: npm
 spec:
-  description: Run yarn tasks
-  params:
-    - default: .
-      description: The path where package.json of the project is defined.
-      name: PATH_CONTEXT
-      type: string
-    - default: install
-      description: The yarn script you want to run.
-      name: SCRIPT
-      type: string
-    - default: 'registry.redhat.io/rhel9/nodejs-20:latest'
-      description: The node image you want to use.
-      name: IMAGE
-      type: string
-  steps:
-    - computeResources: {}
-      image: $(params.IMAGE)
-      name: yarn
-      script: |
-        npm install --global yarn && yarn $(params.SCRIPT)
-      workingDir: $(workspaces.source.path)/$(params.PATH_CONTEXT)
+  description: Run npm tasks
+
   workspaces:
     - name: source
+    - name: npmrc
+      optional: true
+
+  params:
+
+    - name: PATH_CONTEXT
+      type: string
+      default: .
+      description: The path where package.json of the project is defined
+    - name: COMMAND
+      type: string
+      default: npm install
+      description: The script you want to run
+    - name: IMAGE
+      type: string
+      default: 'registry.redhat.io/rhel9/nodejs-20:latest'
+      description: The node image you want to use
+
+  steps:
+
+    - name: npm
+      image: $(params.IMAGE)
+      script: |
+        if [ -f $(workspaces.npmrc.path)/.npmrc ]; then
+          cp $(workspaces.npmrc.path)/.npmrc ~/.npmrc
+        fi && npm $(params.COMMAND)
+      workingDir: $(workspaces.source.path)/$(params.PATH_CONTEXT)
