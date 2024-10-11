@@ -4,7 +4,9 @@ metadata:
   name: rhdh-plugin
 spec:
   workspaces:
-  - name: source
+    - name: source
+    - name: npmrc
+      optional: true
 
   params:
 
@@ -14,16 +16,10 @@ spec:
     - name: GIT_REVISION
       type: string
       default: main
-    - name: APP_NAME
-      description: The name of the application
-      default: 'nodejs-app'      
-    - name: APP_VERSION
-      description: The version of the application
-      default: '1.0'      
 
   tasks:
 
-  - name: clone
+  - name: git-clone
     taskRef:
       name: git-clone
       kind: ClusterTask
@@ -33,18 +29,33 @@ spec:
       - name: revision
         value: $(params.GIT_REVISION)
     workspaces:
-    - name: output
-      workspace: source
+      - name: output
+        workspace: source
 
-  - name: yarn-build
+  - name: yarn-install
     taskRef:
-      name: yarn
+      name: npm
       kind: Task
     runAfter: 
-      - clone
+      - git-clone
     params:
-    - name: SCRIPT
-      value: install
+      - name: COMMAND
+        value: install --global yarn && yarn install
     workspaces:
-    - name: source
-      workspace: source
+      - name: source
+        workspace: source
+
+  - name: publish-package
+    taskRef:
+      name: npm
+      kind: Task
+    runAfter:
+      - yarn-install
+    params:
+      - name: COMMAND
+        value: publish
+    workspaces:
+      - name: source
+        workspace: source
+      - name: npmrc
+        workspace: npmrc
