@@ -1,5 +1,5 @@
 {
-  "name": "@daferoli/backstage-plugin-scaffolder-backend-module-export-global-variable",
+  "name": "@daferoli/backstage-plugin-scaffolder-global-variables",
   "description": "The export-global-variable module for @backstage/plugin-scaffolder-backend",
   "version": "0.1.0",
   "main": "src/index.ts",
